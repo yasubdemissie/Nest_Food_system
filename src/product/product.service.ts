@@ -21,10 +21,7 @@ export class ProductService {
 
   create(createProductDto: CreateProductDto) {
     try {
-      this.products.push({
-        ...createProductDto,
-        id: new Date().toDateString(),
-      });
+      this.products.push(createProductDto);
       return this.products;
     } catch (error) {
       throw new Error("Sorry can't add new product", {

@@ -12,6 +12,7 @@ import { CartModule } from './cart/cart.module';
 import { NotificationModule } from './notification/notification.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AdminModule } from './admin/admin.module';
+import { AdminController } from './admin/admin.controller';
 
 @Module({
   imports: [
@@ -28,10 +29,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .exclude(
-        { path: 'notitification', method: RequestMethod.GET },
-        { path: 'user', method: RequestMethod.ALL },
-        'product/',
-      );
+      .exclude({ path: 'admin', method: RequestMethod.GET })
+      .forRoutes(AdminController);
   }
 }

@@ -12,6 +12,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { NotificationService } from 'src/notification/notification.service';
+import { ParseProduct } from 'src/pipe/transfomProduct.pipe';
 
 @Controller('product')
 export class ProductController {
@@ -21,7 +22,7 @@ export class ProductController {
   ) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  create(@Body(ParseProduct) createProductDto: CreateProductDto) {
     const result = this.productService.create(createProductDto);
     const notify = `Product created: ${createProductDto.product}`;
     const message = this.notificationService.sendNotification({
