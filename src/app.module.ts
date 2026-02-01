@@ -13,6 +13,7 @@ import { NotificationModule } from './notification/notification.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AdminModule } from './admin/admin.module';
 import { AdminController } from './admin/admin.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { AdminController } from './admin/admin.controller';
     CartModule,
     NotificationModule,
     AdminModule,
+    ConfigModule.forRoot({
+      cache: true,
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
