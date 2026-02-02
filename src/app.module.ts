@@ -15,12 +15,15 @@ import { AdminModule } from './admin/admin.module';
 import { AdminController } from './admin/admin.controller';
 import { ConfigModule } from '@nestjs/config';
 import config from './config/config';
+import { prismaService } from './helper/prisma.service';
+import { prismaModule } from './helper/prisma.module';
 
 @Module({
   imports: [
     UserModule,
     ProductModule,
     CartModule,
+    // prismaModule,
     NotificationModule,
     AdminModule,
     ConfigModule.forRoot({
@@ -30,7 +33,7 @@ import config from './config/config';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, prismaService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

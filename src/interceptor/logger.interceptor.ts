@@ -3,10 +3,9 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  RequestTimeoutException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { catchError, Observable, throwError, timeout } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
@@ -19,11 +18,6 @@ export class LoggerInterceptor implements NestInterceptor {
 
     console.log(request.originalUrl);
 
-    return next.handle().pipe(
-      timeout(10000),
-      catchError(() => {
-        return throwError(() => new RequestTimeoutException());
-      }),
-    );
+    return next.handle();
   }
 }

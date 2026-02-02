@@ -7,12 +7,17 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  Query,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { LoggerInterceptor } from 'src/interceptor/logger.interceptor';
+import { UserParserPipe } from 'src/pipe/user.pipe';
 
 @UseInterceptors(LoggerInterceptor)
 @Controller('user')
@@ -22,30 +27,56 @@ export class UserController {
     private configService: ConfigService,
   ) {}
 
+  // POST /user - Create a new user
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body(UserParserPipe) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  // GET /user - Get all users
   @Get()
   findAll() {
-    console.log(this.configService.get(`database.connectionString`));
     return this.userService.findAll();
   }
 
+  // GET /user/stats - Get user statistics
+  @Get('stats')
+  getUserStats() {
+    return this.userService.getUserStats();
+  }
+
+  // GET /user/search?q=query - Search users
+  @Get('search')
+  searchUsers(@Query('q') query: string) {
+    return this.userService.searchUsers(query);
+  }
+
+  // GET /user/email/:email - Get user by email
+  @Get('email/:email')
+  findByEmail(@Param('email') email: string) {
+    return this.userService.findByEmail(email);
+  }
+
+  // GET /user/:id - Get user by ID
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    console.log(this.configService.get(`CONNECTION_STRING`));
-    return this.userService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOne(id);
   }
 
+  // PATCH /user/:id - Update user
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(id, updateUserDto);
   }
 
+  // DELETE /user/:id - Delete user
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.remove(id);
   }
 }
