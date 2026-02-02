@@ -13,3 +13,53 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  name      String?
+  password  String
+
+  orders    Order[]
+}
+
+model Category {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+
+  products  Product[]
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  price       Float
+  stock       Int
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+
+  orderId   Int
+  productId Int
+  quantity  Int
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
