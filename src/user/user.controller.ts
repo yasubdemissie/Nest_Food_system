@@ -6,17 +6,21 @@ import {
   Patch,
   Param,
   Delete,
-  // UseInterceptors,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-// import { LoggerInterceptor } from 'src/interceptor/logger.interceptor';
+import { ConfigService } from '@nestjs/config';
+import { LoggerInterceptor } from 'src/interceptor/logger.interceptor';
 
-// @UseInterceptors(LoggerInterceptor)
+@UseInterceptors(LoggerInterceptor)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private configService: ConfigService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -25,11 +29,13 @@ export class UserController {
 
   @Get()
   findAll() {
+    console.log(this.configService.get(`database.connectionString`));
     return this.userService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    console.log(this.configService.get(`CONNECTION_STRING`));
     return this.userService.findOne(+id);
   }
 

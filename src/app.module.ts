@@ -14,6 +14,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AdminModule } from './admin/admin.module';
 import { AdminController } from './admin/admin.controller';
 import { ConfigModule } from '@nestjs/config';
+import config from './config/config';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
+      load: [config],
     }),
   ],
   controllers: [AppController],
